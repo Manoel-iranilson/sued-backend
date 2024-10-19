@@ -11,5 +11,5 @@ export class CreateTechnicalSheetDto {
   recipeSize: number;
 
   @IsArray()
-  products: string[];
+  ingredients: string[];
 }
