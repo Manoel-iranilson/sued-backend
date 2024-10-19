@@ -1,4 +1,16 @@
-import { IsString, IsArray, IsNumber } from 'class-validator';
+import { IsString, IsArray, IsNumber, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class IngredientDetailDto {
+  @IsString()
+  ingredientId: string;
+
+  @IsNumber()
+  finalWeight: number;
+
+  @IsNumber()
+  finalPrice: number;
+}
 
 export class CreateTechnicalSheetDto {
   @IsString()
@@ -11,5 +23,7 @@ export class CreateTechnicalSheetDto {
   recipeSize: number;
 
   @IsArray()
-  ingredients: string[];
+  @ValidateNested({ each: true })
+  @Type(() => IngredientDetailDto)
+  ingredients: IngredientDetailDto[];
 }

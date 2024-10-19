@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
+import { CreateTechnicalSheetDto } from './dto/createTechnicalSheet.dto';
 
 @Injectable()
 export class TechnicalSheetService {
@@ -12,7 +12,7 @@ export class TechnicalSheetService {
         id: id,
       },
       include: {
-        ingredients: true,
+        Ingredient: true,
       },
     });
   }
@@ -20,14 +20,12 @@ export class TechnicalSheetService {
   async getAllTechnicalSheets() {
     return this.prisma.technicalSheet.findMany({
       include: {
-        ingredients: true,
+        Ingredient: true,
       },
     });
   }
 
-  async createTechnicalSheet(
-    data: Prisma.TechnicalSheetCreateInput & { ingredients: string[] },
-  ) {
+  async createTechnicalSheet(data: CreateTechnicalSheetDto) {
     return this.prisma.technicalSheet.create({
       data: {
         dishName: data.dishName,
@@ -35,8 +33,10 @@ export class TechnicalSheetService {
         totalPrice: data.totalPrice,
         recipeSize: data.recipeSize,
         ingredients: {
-          connect: data.ingredients.map((ingredientId) => ({
-            id: ingredientId,
+          set: data.ingredients.map((ingredient) => ({
+            ingredientId: ingredient.ingredientId,
+            finalWeight: ingredient.finalWeight,
+            finalPrice: ingredient.finalPrice,
           })),
         },
       },

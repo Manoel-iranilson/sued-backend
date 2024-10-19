@@ -7,27 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Ingredient {
-  id           String            @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  type         String
-  FC           Float
-  IC           Float
-  // Kcal         BigInt
-  // KJ           Int
-  // calculateby  String
-
-  technicalSheetIds String[] @db.ObjectId
-  technicalSheets TechnicalSheet[]  @relation(fields: [technicalSheetIds], references: [id])
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  type            String
+  FC              Float
+  IC              Float
+ 
+  technicalSheets TechnicalSheet[] 
 }
 
 model TechnicalSheet {
-  id           String            @id @default(auto()) @map("_id") @db.ObjectId
-  created_at   DateTime @default(now())
+  id           String             @id @default(auto()) @map("_id") @db.ObjectId
+  created_at   DateTime           @default(now())
   dishName     String
-  ingredientsIds String[] @db.ObjectId
-  ingredients Ingredient[]  @relation(fields: [ingredientsIds], references: [id])
+  ingredients  IngredientDetail[]
   totalPrice   Float
   recipeSize   Float
+  Ingredient   Ingredient?        @relation(fields: [ingredientId], references: [id])
+  ingredientId String?            @db.ObjectId
+}
+
+type IngredientDetail {
+  ingredientId String @db.ObjectId
+  finalWeight  Float
+  finalPrice   Float
 }
