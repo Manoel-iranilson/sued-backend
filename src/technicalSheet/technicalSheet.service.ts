@@ -25,11 +25,13 @@ export class TechnicalSheetService {
         created_at: new Date(),
         totalPrice: data.totalPrice,
         recipeSize: data.recipeSize,
-        ingredients: data.ingredients.map((ingredient) => ({
-          ingredientId: ingredient.ingredientId,
-          finalWeight: ingredient.finalWeight,
-          finalPrice: ingredient.finalPrice,
-        })),
+        ingredients: {
+          set: data.ingredients.map((ingredient) => ({
+            ingredientId: ingredient.ingredientId,
+            finalWeight: ingredient.finalWeight,
+            finalPrice: ingredient.finalPrice,
+          })),
+        },
       },
     });
   }
