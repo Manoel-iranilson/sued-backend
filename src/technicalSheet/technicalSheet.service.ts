@@ -11,18 +11,11 @@ export class TechnicalSheetService {
       where: {
         id: id,
       },
-      include: {
-        Ingredient: true,
-      },
     });
   }
 
   async getAllTechnicalSheets() {
-    return this.prisma.technicalSheet.findMany({
-      include: {
-        Ingredient: true,
-      },
-    });
+    return this.prisma.technicalSheet.findMany();
   }
 
   async createTechnicalSheet(data: CreateTechnicalSheetDto) {
@@ -32,13 +25,11 @@ export class TechnicalSheetService {
         created_at: new Date(),
         totalPrice: data.totalPrice,
         recipeSize: data.recipeSize,
-        ingredients: {
-          set: data.ingredients.map((ingredient) => ({
-            ingredientId: ingredient.ingredientId,
-            finalWeight: ingredient.finalWeight,
-            finalPrice: ingredient.finalPrice,
-          })),
-        },
+        ingredients: data.ingredients.map((ingredient) => ({
+          ingredientId: ingredient.ingredientId,
+          finalWeight: ingredient.finalWeight,
+          finalPrice: ingredient.finalPrice,
+        })),
       },
     });
   }
