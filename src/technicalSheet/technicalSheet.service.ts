@@ -12,7 +12,7 @@ export class TechnicalSheetService {
         id: id,
       },
       include: {
-        products: true,
+        ingredients: true,
       },
     });
   }
@@ -20,13 +20,13 @@ export class TechnicalSheetService {
   async getAllTechnicalSheets() {
     return this.prisma.technicalSheet.findMany({
       include: {
-        products: true,
+        ingredients: true,
       },
     });
   }
 
   async createTechnicalSheet(
-    data: Prisma.TechnicalSheetCreateInput & { products: string[] },
+    data: Prisma.TechnicalSheetCreateInput & { ingredients: string[] },
   ) {
     return this.prisma.technicalSheet.create({
       data: {
@@ -34,9 +34,9 @@ export class TechnicalSheetService {
         created_at: new Date(),
         totalPrice: data.totalPrice,
         recipeSize: data.recipeSize,
-        products: {
-          connect: data.products.map((productId) => ({
-            id: productId,
+        ingredients: {
+          connect: data.ingredients.map((ingredientId) => ({
+            id: ingredientId,
           })),
         },
       },

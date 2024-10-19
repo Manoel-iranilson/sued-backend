@@ -8,7 +8,7 @@ datasource db {
 }
 
 
-model Product {
+model Ingredient {
   id           String            @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   type         String
@@ -26,8 +26,8 @@ model TechnicalSheet {
   id           String            @id @default(auto()) @map("_id") @db.ObjectId
   created_at   DateTime @default(now())
   dishName     String
-  productsIds String[] @db.ObjectId
-  products Product[]  @relation(fields: [productsIds], references: [id])
+  ingredientsIds String[] @db.ObjectId
+  ingredients Ingredient[]  @relation(fields: [ingredientsIds], references: [id])
   totalPrice   Float
   recipeSize   Float
 }

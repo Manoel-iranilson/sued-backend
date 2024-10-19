@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
-export class ProductService {
+export class IngredientService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.product.findMany();
+    return this.prisma.ingredient.findMany();
   }
 }
