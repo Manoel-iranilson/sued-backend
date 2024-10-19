@@ -8,13 +8,13 @@ datasource db {
 }
 
 model Ingredient {
-  id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  type            String
-  FC              Float
-  IC              Float
- 
-  technicalSheets TechnicalSheet[] 
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  type String
+  FC   Float
+  IC   Float
+
+  technicalSheets TechnicalSheet[]
 }
 
 model TechnicalSheet {
