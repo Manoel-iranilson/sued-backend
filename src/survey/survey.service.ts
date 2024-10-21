@@ -7,17 +7,17 @@ export class SurveyService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createSurveyDto: CreateSurveyDto) {
-    return this.prisma.survey.create({
+    return await this.prisma.survey.create({
       data: createSurveyDto,
     });
   }
 
   async findAll() {
-    return this.prisma.survey.findMany();
+    return await this.prisma.survey.findMany();
   }
 
   async findOne(id: string) {
-    return this.prisma.survey.findUnique({
+    return await this.prisma.survey.findUnique({
       where: { id },
     });
   }
