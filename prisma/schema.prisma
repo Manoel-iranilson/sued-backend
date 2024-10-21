@@ -8,19 +8,18 @@ datasource db {
 }
 
 model Survey {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
   studentOrProfessional String
-  worksInFoodIndustry  Boolean
+  worksInFoodIndustry   Boolean
   knowsTechnicalSheet   String
   canMakeTechnicalSheet String
   knowsImportance       String
-  name                 String
-  phoneNumber          String
-  email                String
-  consent              Boolean @default(false)
-  created_at           DateTime @default(now())
+  name                  String
+  phoneNumber           String
+  email                 String
+  consent               Boolean  @default(false)
+  created_at            DateTime @default(now())
 }
-
 
 model Ingredient {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
