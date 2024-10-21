@@ -1,23 +1,4 @@
-import { IsString, IsEmail, IsBoolean, IsEnum } from 'class-validator';
-
-enum TechnicalSheetKnowledge {
-  NO_KNOWLEDGE = 'NO_KNOWLEDGE',
-  KNOWS_BUT_NEVER_USED = 'KNOWS_BUT_NEVER_USED',
-  USED_LITTLE = 'USED_LITTLE',
-  ALWAYS_USE = 'ALWAYS_USE',
-}
-
-enum TechnicalSheetSkill {
-  NO = 'NO',
-  THINKS_KNOW = 'THINKS_KNOW',
-  KNOWS = 'KNOWS',
-}
-
-enum ImportanceKnowledge {
-  NO = 'NO',
-  THINKS_KNOW = 'THINKS_KNOW',
-  KNOWS = 'KNOWS',
-}
+import { IsString, IsEmail, IsBoolean, IsDate } from 'class-validator';
 
 export class CreateSurveyDto {
   @IsString()
@@ -26,14 +7,14 @@ export class CreateSurveyDto {
   @IsBoolean()
   worksInFoodIndustry: boolean;
 
-  @IsEnum(TechnicalSheetKnowledge)
-  knowsTechnicalSheet: TechnicalSheetKnowledge;
+  @IsString()
+  knowsTechnicalSheet: string;
 
-  @IsEnum(TechnicalSheetSkill)
-  canMakeTechnicalSheet: TechnicalSheetSkill;
+  @IsString()
+  canMakeTechnicalSheet: string;
 
-  @IsEnum(ImportanceKnowledge)
-  knowsImportance: ImportanceKnowledge;
+  @IsString()
+  knowsImportance: string;
 
   @IsString()
   name: string;
@@ -46,4 +27,7 @@ export class CreateSurveyDto {
 
   @IsBoolean()
   consent: boolean;
+
+  @IsDate()
+  created_at: Date;
 }
