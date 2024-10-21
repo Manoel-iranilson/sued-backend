@@ -7,43 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Survey {
-  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
-  studentOrProfessional String
-  worksInFoodIndustry   Boolean
-  knowsTechnicalSheet   String
-  canMakeTechnicalSheet String
-  knowsImportance       String
-  name                  String
-  phoneNumber           String
-  email                 String
-  consent               Boolean  @default(false)
-  created_at            DateTime @default(now())
+type TechnicalSheetIngredients {
+  finalPrice   Float
+  finalWeight  Float
+  ingredientId String @db.ObjectId
+}
+
+model Brands {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Multiple data types found: String: 99.6%, Int: 0.4% out of 261 sampled entries
+  name Json
 }
 
 model Ingredient {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  type String
-  FC   Float
-  IC   Float
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  FC                Float
+  IC                Float
+  /// Multiple data types found: String: 0.6%, Int: 99.4% out of 621 sampled entries
+  KJ                Json
+  /// Multiple data types found: String: 0.6%, Int: 99.4% out of 621 sampled entries
+  Kcal              Json
+  calculateby       String
+  name              String
+  technicalSheetIds String[]
+  type              String
+}
 
-  technicalSheets TechnicalSheet[]
+model Survey {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  canMakeTechnicalSheet String
+  consent               Boolean
+  created_at            DateTime @db.Date
+  email                 String
+  knowsImportance       String
+  knowsTechnicalSheet   String
+  name                  String
+  phoneNumber           String
+  studentOrProfessional String
+  worksInFoodIndustry   Boolean
 }
 
 model TechnicalSheet {
-  id           String             @id @default(auto()) @map("_id") @db.ObjectId
-  created_at   DateTime           @default(now())
-  dishName     String
-  ingredients  IngredientDetail[]
-  totalPrice   Float
-  recipeSize   Float
-  Ingredient   Ingredient?        @relation(fields: [ingredientId], references: [id])
-  ingredientId String?            @db.ObjectId
-}
-
-type IngredientDetail {
-  ingredientId String @db.ObjectId
-  finalWeight  Float
-  finalPrice   Float
+  id          String                      @id @default(auto()) @map("_id") @db.ObjectId
+  created_at  DateTime                    @db.Date
+  dishName    String
+  ingredients TechnicalSheetIngredients[]
+  recipeSize  Float
+  totalPrice  Float
 }
