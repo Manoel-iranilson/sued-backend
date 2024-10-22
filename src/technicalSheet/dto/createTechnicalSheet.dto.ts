@@ -16,6 +16,9 @@ export class CreateTechnicalSheetDto {
   @IsString()
   dishName: string;
 
+  @IsString()
+  email?: string;
+
   @IsNumber()
   totalPrice: number;
 
@@ -26,7 +29,4 @@ export class CreateTechnicalSheetDto {
   @ValidateNested({ each: true })
   @Type(() => IngredientDetailDto)
   ingredients: IngredientDetailDto[];
-
-  @IsString()
-  email: string;
 }
