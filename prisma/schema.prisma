@@ -51,7 +51,7 @@ model TechnicalSheet {
   id          String                      @id @default(auto()) @map("_id") @db.ObjectId
   created_at  DateTime                    @db.Date
   dishName    String
-  email       String?
+  email       String
   ingredients TechnicalSheetIngredients[]
   recipeSize  Float
   totalPrice  Float
