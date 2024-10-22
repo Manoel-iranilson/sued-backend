@@ -7,15 +7,41 @@ export class TechnicalSheetService {
   constructor(private prisma: PrismaService) {}
 
   async getTechnicalSheet(id: string) {
-    return this.prisma.technicalSheet.findUnique({
+    // Busca a ficha técnica pelo ID
+    const technicalSheet = await this.prisma.technicalSheet.findUnique({
       where: {
         id: id,
       },
     });
+
+    if (!technicalSheet) {
+      throw new Error('Technical sheet not found');
+    }
+
+    // Faz uma busca pelos ingredientes utilizando os ingredientIds
+    const ingredients = await this.prisma.ingredient.findMany({
+      where: {
+        id: {
+          in: technicalSheet.ingredients.map(
+            (ingredient) => ingredient.ingredientId,
+          ),
+        },
+      },
+    });
+
+    // Retorna a ficha técnica juntamente com os detalhes dos ingredientes
+    return {
+      ...technicalSheet,
+      ingredients,
+    };
   }
 
-  async getAllTechnicalSheets() {
-    return this.prisma.technicalSheet.findMany();
+  async getAllTechnicalSheets(email: string) {
+    return this.prisma.technicalSheet.findMany({
+      where: {
+        email: email,
+      },
+    });
   }
 
   async createTechnicalSheet(data: CreateTechnicalSheetDto) {
@@ -25,6 +51,7 @@ export class TechnicalSheetService {
         created_at: new Date(),
         totalPrice: data.totalPrice,
         recipeSize: data.recipeSize,
+        email: data.email,
         ingredients: {
           set: data.ingredients.map((ingredient) => ({
             ingredientId: ingredient.ingredientId,

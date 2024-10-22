@@ -7,11 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-type TechnicalSheetIngredients {
-  finalPrice   Float
-  finalWeight  Float
-  ingredientId String @db.ObjectId
-}
+
 
 model Brands {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
@@ -47,6 +43,12 @@ model Survey {
   worksInFoodIndustry   Boolean
 }
 
+type TechnicalSheetIngredients {
+  finalPrice   Float
+  finalWeight  Float
+  ingredientId String @db.ObjectId
+}
+
 model TechnicalSheet {
   id          String                      @id @default(auto()) @map("_id") @db.ObjectId
   created_at  DateTime                    @db.Date
@@ -54,4 +56,6 @@ model TechnicalSheet {
   ingredients TechnicalSheetIngredients[]
   recipeSize  Float
   totalPrice  Float
+  email       String
 }
+

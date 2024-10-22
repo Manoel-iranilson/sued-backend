@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { TechnicalSheetService } from './technicalSheet.service';
 import { CreateTechnicalSheetDto } from './dto/createTechnicalSheet.dto';
 
@@ -12,8 +12,8 @@ export class TechnicalSheetController {
   }
 
   @Get()
-  async getAllTechnicalSheets() {
-    return this.technicalSheetService.getAllTechnicalSheets();
+  async getAllTechnicalSheets(@Query('email') email: string) {
+    return this.technicalSheetService.getAllTechnicalSheets(email);
   }
 
   @Post()

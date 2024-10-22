@@ -26,4 +26,7 @@ export class CreateTechnicalSheetDto {
   @ValidateNested({ each: true })
   @Type(() => IngredientDetailDto)
   ingredients: IngredientDetailDto[];
+
+  @IsString()
+  email: string;
 }
