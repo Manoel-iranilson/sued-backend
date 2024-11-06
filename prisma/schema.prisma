@@ -2,40 +2,68 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String @unique
-  password String
-}
-
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-model Ingredient {
+model Brands {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
-  type String
-  FC   Float
-  IC   Float
+}
 
-  technicalSheets TechnicalSheet[]
+model Ingredient {
+  id              String                     @id @default(auto()) @map("_id") @db.ObjectId
+  FC              Float
+  IC              Float
+  KJ              Int
+  Kcal            Int
+  calculateby     String
+  name            String
+  type            String
+  technicalSheets TechnicalSheetIngredient[]
 }
 
 model TechnicalSheet {
-  id           String             @id @default(auto()) @map("_id") @db.ObjectId
-  created_at   DateTime           @default(now())
-  dishName     String
-  ingredients  IngredientDetail[]
-  totalPrice   Float
-  recipeSize   Float
-  Ingredient   Ingredient?        @relation(fields: [ingredientId], references: [id])
-  ingredientId String?            @db.ObjectId
+  id          String                     @id @default(auto()) @map("_id") @db.ObjectId
+  created_at  DateTime                   @db.Date
+  dishName    String
+  recipeSize  Float
+  totalPrice  Float
+  ingredients TechnicalSheetIngredient[]
+  User        User?                      @relation(fields: [userId], references: [id])
+  userId      String?                    @db.ObjectId
 }
 
-type IngredientDetail {
-  ingredientId String @db.ObjectId
-  finalWeight  Float
-  finalPrice   Float
+model TechnicalSheetIngredient {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  technicalSheet   TechnicalSheet @relation(fields: [technicalSheetId], references: [id])
+  technicalSheetId String         @db.ObjectId
+  ingredient       Ingredient     @relation(fields: [ingredientId], references: [id])
+  ingredientId     String         @db.ObjectId
+  finalWeight      Float
+  finalPrice       Float
+
+  @@unique([technicalSheetId, ingredientId])
+}
+
+model Survey {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  canMakeTechnicalSheet String
+  consent               Boolean
+  created_at            DateTime @db.Date
+  email                 String
+  knowsImportance       String
+  knowsTechnicalSheet   String
+  name                  String
+  phoneNumber           String
+  studentOrProfessional String
+  worksInFoodIndustry   Boolean
+}
+
+model User {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  email           String
+  password        String
+  technicalSheets TechnicalSheet[]
 }

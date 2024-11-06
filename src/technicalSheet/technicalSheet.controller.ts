@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { TechnicalSheetService } from './technicalSheet.service';
 import { CreateTechnicalSheetDto } from './dto/createTechnicalSheet.dto';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('technicalSheet')
 export class TechnicalSheetController {
@@ -12,12 +14,15 @@ export class TechnicalSheetController {
   }
 
   @Get()
-  async getAllTechnicalSheets() {
-    return this.technicalSheetService.getAllTechnicalSheets();
+  async getAllTechnicalSheets(@CurrentUser() user: User) {
+    return this.technicalSheetService.getAllTechnicalSheets(user.id);
   }
 
   @Post()
-  async create(@Body() data: CreateTechnicalSheetDto) {
-    return this.technicalSheetService.createTechnicalSheet(data);
+  async create(
+    @CurrentUser() user: User,
+    @Body() data: CreateTechnicalSheetDto,
+  ) {
+    return this.technicalSheetService.createTechnicalSheet(user.id, data);
   }
 }

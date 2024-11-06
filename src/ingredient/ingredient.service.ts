@@ -8,4 +8,12 @@ export class IngredientService {
   async findAll() {
     return this.prisma.ingredient.findMany();
   }
+
+  async getProduto(id: string) {
+    return this.prisma.technicalSheet.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  }
 }

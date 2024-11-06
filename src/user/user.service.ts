@@ -23,7 +23,7 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    const user = this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findFirst({ where: { email: email } });
     return user;
   }
 }

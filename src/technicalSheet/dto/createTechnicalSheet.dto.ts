@@ -22,6 +22,9 @@ export class CreateTechnicalSheetDto {
   @IsNumber()
   recipeSize: number;
 
+  @IsString()
+  userId: string;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => IngredientDetailDto)
