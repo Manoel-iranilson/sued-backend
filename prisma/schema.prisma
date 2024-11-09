@@ -13,14 +13,15 @@ model brands {
 }
 
 model ingredient {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  FC          Float
-  IC          Float
-  KJ          Int
-  Kcal        Int
-  calculateby String
-  name        String
-  type        String
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
+  FC                       Float
+  IC                       Float
+  KJ                       Int
+  Kcal                     Int
+  calculateby              String
+  name                     String
+  type                     String
+  technicalSheetIngredient technicalSheetIngredient[]
 }
 
 model survey {
@@ -38,26 +39,29 @@ model survey {
 }
 
 model technicalSheet {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  created_at DateTime @db.Date
-  dishName   String
-  recipeSize Float
-  totalPrice Float
-  userId     String   @db.ObjectId
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
+  created_at               DateTime                   @db.Date
+  dishName                 String
+  recipeSize               Float
+  totalPrice               Float
+  userId                   String                     @db.ObjectId
+  user                     user                       @relation(fields: [userId], references: [id])
+  technicalSheetIngredient technicalSheetIngredient[]
 }
 
 model technicalSheetIngredient {
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
   finalPrice       Float
   finalWeight      Float
-  ingredientId     String @db.ObjectId
-  technicalSheetId String @db.ObjectId
-
-  @@unique([technicalSheetId, ingredientId], map: "TechnicalSheetIngredient_technicalSheetId_ingredientId_key")
+  technicalSheet   technicalSheet @relation(fields: [technicalSheetId], references: [id])
+  technicalSheetId String         @db.ObjectId
+  ingredient       ingredient     @relation(fields: [ingredientId], references: [id])
+  ingredientId     String         @db.ObjectId
 }
 
 model user {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String
-  password String
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  email          String
+  password       String
+  technicalSheet technicalSheet[]
 }
