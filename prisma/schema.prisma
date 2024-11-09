@@ -24,14 +24,28 @@ model Ingredient {
   technicalSheets TechnicalSheetIngredient[]
 }
 
+model Survey {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  canMakeTechnicalSheet String
+  consent               Boolean
+  created_at            DateTime @db.Date
+  email                 String
+  knowsImportance       String
+  knowsTechnicalSheet   String
+  name                  String
+  phoneNumber           String
+  studentOrProfessional String
+  worksInFoodIndustry   Boolean
+}
+
 model TechnicalSheet {
   id          String                     @id @default(auto()) @map("_id") @db.ObjectId
   created_at  DateTime                   @db.Date
   dishName    String
   recipeSize  Float
   totalPrice  Float
-  ingredients TechnicalSheetIngredient[]
-  User        User?                      @relation(fields: [userId], references: [id])
+  ingredients TechnicalSheetIngredient[] // Relação restaurada
+  User        User?                      @relation(fields: [userId], references: [id]) // Relação restaurada
   userId      String?                    @db.ObjectId
 }
 
@@ -47,23 +61,9 @@ model TechnicalSheetIngredient {
   @@unique([technicalSheetId, ingredientId])
 }
 
-model Survey {
-  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
-  canMakeTechnicalSheet String
-  consent               Boolean
-  created_at            DateTime @db.Date
-  email                 String
-  knowsImportance       String
-  knowsTechnicalSheet   String
-  name                  String
-  phoneNumber           String
-  studentOrProfessional String
-  worksInFoodIndustry   Boolean
-}
-
 model User {
-  id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  email           String
-  password        String
-  technicalSheets TechnicalSheet[]
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  email          String
+  password       String
+  TechnicalSheet TechnicalSheet[]
 }
