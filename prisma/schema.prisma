@@ -13,15 +13,15 @@ model Brands {
 }
 
 model Ingredient {
-  id              String                     @id @default(auto()) @map("_id") @db.ObjectId
-  FC              Float
-  IC              Float
-  KJ              Int
-  Kcal            Int
-  calculateby     String
-  name            String
-  type            String
-  technicalSheets TechnicalSheetIngredient[]
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
+  FC                       Float
+  IC                       Float
+  KJ                       Int
+  Kcal                     Int
+  calculateby              String
+  name                     String
+  type                     String
+  TechnicalSheetIngredient TechnicalSheetIngredient[]
 }
 
 model Survey {
@@ -44,19 +44,19 @@ model TechnicalSheet {
   dishName    String
   recipeSize  Float
   totalPrice  Float
-  ingredients TechnicalSheetIngredient[] // Relação restaurada
-  User        User?                      @relation(fields: [userId], references: [id]) // Relação restaurada
-  userId      String?                    @db.ObjectId
+  userId      String                     @db.ObjectId
+  ingredients TechnicalSheetIngredient[] @relation("TechnicalSheetToIngredients")
+  User        User?                      @relation(fields: [userId], references: [id])
 }
 
 model TechnicalSheetIngredient {
   id               String         @id @default(auto()) @map("_id") @db.ObjectId
-  technicalSheet   TechnicalSheet @relation(fields: [technicalSheetId], references: [id])
-  technicalSheetId String         @db.ObjectId
-  ingredient       Ingredient     @relation(fields: [ingredientId], references: [id])
-  ingredientId     String         @db.ObjectId
-  finalWeight      Float
   finalPrice       Float
+  finalWeight      Float
+  ingredientId     String         @db.ObjectId
+  technicalSheetId String         @db.ObjectId
+  technicalSheet   TechnicalSheet @relation("TechnicalSheetToIngredients", fields: [technicalSheetId], references: [id])
+  ingredient       Ingredient     @relation(fields: [ingredientId], references: [id])
 
   @@unique([technicalSheetId, ingredientId])
 }
