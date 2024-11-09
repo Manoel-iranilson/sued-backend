@@ -13,15 +13,14 @@ model Brands {
 }
 
 model Ingredient {
-  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
-  FC                       Float
-  IC                       Float
-  KJ                       Int
-  Kcal                     Int
-  calculateby              String
-  name                     String
-  type                     String
-  TechnicalSheetIngredient TechnicalSheetIngredient[]
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  FC          Float
+  IC          Float
+  KJ          Int
+  Kcal        Int
+  calculateby String
+  name        String
+  type        String
 }
 
 model Survey {
@@ -39,31 +38,26 @@ model Survey {
 }
 
 model TechnicalSheet {
-  id          String                     @id @default(auto()) @map("_id") @db.ObjectId
-  created_at  DateTime                   @db.Date
-  dishName    String
-  recipeSize  Float
-  totalPrice  Float
-  userId      String                     @db.ObjectId
-  ingredients TechnicalSheetIngredient[] @relation("TechnicalSheetToIngredients")
-  User        User?                      @relation(fields: [userId], references: [id])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime @db.Date
+  dishName   String
+  recipeSize Float
+  totalPrice Float
+  userId     String   @db.ObjectId
 }
 
 model TechnicalSheetIngredient {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
   finalPrice       Float
   finalWeight      Float
-  ingredientId     String         @db.ObjectId
-  technicalSheetId String         @db.ObjectId
-  technicalSheet   TechnicalSheet @relation("TechnicalSheetToIngredients", fields: [technicalSheetId], references: [id])
-  ingredient       Ingredient     @relation(fields: [ingredientId], references: [id])
+  ingredientId     String @db.ObjectId
+  technicalSheetId String @db.ObjectId
 
   @@unique([technicalSheetId, ingredientId])
 }
 
 model User {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
-  email          String
-  password       String
-  TechnicalSheet TechnicalSheet[]
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String
+  password String
 }

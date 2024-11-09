@@ -6,8 +6,8 @@ import { CreateTechnicalSheetDto } from './dto/createTechnicalSheet.dto';
 export class TechnicalSheetService {
   constructor(private prisma: PrismaService) {}
 
-  // Obter uma ficha técnica por ID, incluindo os ingredientes associados
   async getTechnicalSheet(id: string) {
+    // Obter a ficha técnica pelo ID
     const technicalSheet = await this.prisma.technicalSheet.findUnique({
       where: { id },
     });
@@ -16,21 +16,40 @@ export class TechnicalSheetService {
       throw new NotFoundException('Technical sheet not found');
     }
 
-    // Obter os ingredientes associados manualmente
-    const ingredients = await this.prisma.technicalSheetIngredient.findMany({
-      where: { technicalSheetId: id },
-      include: {
-        ingredient: true, // Inclui os dados do ingrediente
-      },
+    // Buscar as associações entre ficha técnica e ingredientes
+    const technicalSheetIngredients =
+      await this.prisma.technicalSheetIngredient.findMany({
+        where: { technicalSheetId: id },
+      });
+
+    // Buscar os detalhes dos ingredientes relacionados
+    const ingredientIds = technicalSheetIngredients.map(
+      (tsi) => tsi.ingredientId,
+    );
+    const ingredients = await this.prisma.ingredient.findMany({
+      where: { id: { in: ingredientIds } },
     });
 
+    // Mapear os ingredientes para incluir detalhes adicionais
+    const ingredientsWithDetails = technicalSheetIngredients.map((tsi) => {
+      const ingredient = ingredients.find((ing) => ing.id === tsi.ingredientId);
+      return {
+        ...ingredient,
+        finalWeight: tsi.finalWeight,
+        finalPrice: tsi.finalPrice,
+      };
+    });
+
+    // Retornar a ficha técnica com os ingredientes associados
     return {
       ...technicalSheet,
-      ingredients, // Inclui os ingredientes na resposta
+      ingredients: ingredientsWithDetails,
     };
   }
+
   // Obter todas as fichas técnicas de um usuário
   async getAllTechnicalSheets(userId: string) {
+    // Obter todas as fichas técnicas do usuário
     const technicalSheets = await this.prisma.technicalSheet.findMany({
       where: { userId },
     });
@@ -39,28 +58,57 @@ export class TechnicalSheetService {
       throw new NotFoundException('No technical sheets found for this user');
     }
 
-    // Obter os ingredientes para cada ficha técnica
-    const technicalSheetsWithIngredients = await Promise.all(
-      technicalSheets.map(async (sheet) => {
-        const ingredients = await this.prisma.technicalSheetIngredient.findMany(
-          {
-            where: { technicalSheetId: sheet.id },
-            include: {
-              ingredient: true,
-            },
-          },
-        );
+    // Obter os ingredientes associados a todas as fichas técnicas
+    const technicalSheetIds = technicalSheets.map((sheet) => sheet.id);
+    const technicalSheetIngredients =
+      await this.prisma.technicalSheetIngredient.findMany({
+        where: { technicalSheetId: { in: technicalSheetIds } },
+      });
 
-        return { ...sheet, ingredients };
-      }),
+    // Buscar os detalhes dos ingredientes
+    const ingredientIds = technicalSheetIngredients.map(
+      (tsi) => tsi.ingredientId,
     );
+    const ingredients = await this.prisma.ingredient.findMany({
+      where: { id: { in: ingredientIds } },
+    });
+
+    // Associar ingredientes a suas respectivas fichas técnicas
+    const technicalSheetsWithIngredients = technicalSheets.map((sheet) => {
+      const relatedIngredients = technicalSheetIngredients
+        .filter((tsi) => tsi.technicalSheetId === sheet.id)
+        .map((tsi) => {
+          const ingredient = ingredients.find(
+            (ing) => ing.id === tsi.ingredientId,
+          );
+          return {
+            ...ingredient,
+            finalWeight: tsi.finalWeight,
+            finalPrice: tsi.finalPrice,
+          };
+        });
+
+      return { ...sheet, ingredients: relatedIngredients };
+    });
 
     return technicalSheetsWithIngredients;
   }
 
   // Criar uma nova ficha técnica, incluindo ingredientes na relação
   async createTechnicalSheet(userId: string, data: CreateTechnicalSheetDto) {
-    // Cria a ficha técnica
+    // Verificar se todos os ingredientes existem
+    const ingredientIds = data.ingredients.map(
+      (ingredient) => ingredient.ingredientId,
+    );
+    const existingIngredients = await this.prisma.ingredient.findMany({
+      where: { id: { in: ingredientIds } },
+    });
+
+    if (existingIngredients.length !== ingredientIds.length) {
+      throw new NotFoundException('One or more ingredients not found');
+    }
+
+    // Criação da ficha técnica
     const technicalSheet = await this.prisma.technicalSheet.create({
       data: {
         dishName: data.dishName,
@@ -71,7 +119,7 @@ export class TechnicalSheetService {
       },
     });
 
-    // Cria as associações com os ingredientes
+    // Criação das associações com os ingredientes
     const ingredients = data.ingredients.map((ingredient) => ({
       technicalSheetId: technicalSheet.id,
       ingredientId: ingredient.ingredientId,
