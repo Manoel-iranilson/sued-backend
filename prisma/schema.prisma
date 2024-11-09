@@ -7,12 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Brands {
+model brands {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
 }
 
-model Ingredient {
+model ingredient {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   FC          Float
   IC          Float
@@ -23,7 +23,7 @@ model Ingredient {
   type        String
 }
 
-model Survey {
+model survey {
   id                    String   @id @default(auto()) @map("_id") @db.ObjectId
   canMakeTechnicalSheet String
   consent               Boolean
@@ -37,7 +37,7 @@ model Survey {
   worksInFoodIndustry   Boolean
 }
 
-model TechnicalSheet {
+model technicalSheet {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   created_at DateTime @db.Date
   dishName   String
@@ -46,17 +46,17 @@ model TechnicalSheet {
   userId     String   @db.ObjectId
 }
 
-model TechnicalSheetIngredient {
+model technicalSheetIngredient {
   id               String @id @default(auto()) @map("_id") @db.ObjectId
   finalPrice       Float
   finalWeight      Float
   ingredientId     String @db.ObjectId
   technicalSheetId String @db.ObjectId
 
-  @@unique([technicalSheetId, ingredientId])
+  @@unique([technicalSheetId, ingredientId], map: "TechnicalSheetIngredient_technicalSheetId_ingredientId_key")
 }
 
-model User {
+model user {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   email    String
   password String
